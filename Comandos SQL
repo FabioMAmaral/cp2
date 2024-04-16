@@ -1,0 +1,71 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    idade INT
+);
+
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    preco NUMERIC(10, 2) NOT NULL
+);
+
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES users(id),
+    descricao TEXT,
+    status VARCHAR(50)
+);
+
+CREATE TABLE pedidos_produtos (
+    pedido_id INT REFERENCES pedidos(id),
+    produto_id INT REFERENCES produtos(id),
+    PRIMARY KEY (pedido_id, produto_id)
+);
+
+
+INSERT INTO users (nome, email, idade) VALUES
+('João', 'joao@example.com', 30),
+('Maria', 'maria@example.com', 25);
+
+
+
+INSERT INTO produtos (nome, preco) VALUES
+('Produto A', 100.00),
+('Produto B', 150.00),
+('Produto C', 200.00);
+
+
+INSERT INTO pedidos (usuario_id, descricao, status) VALUES
+(1, 'Pedido 1', 'Em andamento'),
+(2, 'Pedido 2', 'Concluído');
+
+
+INSERT INTO pedidos_produtos (pedido_id, produto_id) VALUES
+(1, 1),
+(1, 2),
+(2, 3);
+
+
+INSERT INTO users (nome, email, idade) values
+('Fabio', 'fabio@example.com', 28);
+
+SELECT * FROM users;
+
+
+SELECT * FROM users WHERE id = 1;
+SELECT * FROM users WHERE email = 'joao@example.com';
+
+
+SELECT * FROM pedidos;
+
+
+SELECT * FROM pedidos WHERE id = 1;
+
+
+SELECT * FROM produtos;
+
+
+SELECT * FROM produtos WHERE id = 1;
+
