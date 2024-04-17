@@ -110,7 +110,7 @@ python app.py
 
 ------------------------------------------------------------------
 
-## ENDPOINTS
+# ENDPOINTS
 Usuários:
   •	Adicionar Usuário: POST /api/users/add
   •	Payload JSON: { "nome": "Nome do Usuário", "email": "email@example.com", "idade": 30 }
