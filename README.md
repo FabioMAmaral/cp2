@@ -114,6 +114,7 @@ python app.py
   
 ### Usuários:
   •	Adicionar Usuário: POST /api/users/add
+  
   •	Payload JSON:
   ```bash
     {
@@ -124,9 +125,11 @@ python app.py
   ```
 
   •	Buscar Usuário: GET /api/users/<user_id>
+  
   •	Parâmetros: ID do usuário a ser obtido
 ### Pedidos:
   •	Adicionar Pedido: POST /api/pedidos/add
+  
   •	Payload JSON:
   ``` bash
    { 
@@ -136,7 +139,9 @@ python app.py
    }
 ```
   •	Consultar Pedido: GET /api/pedidos/<pedido_id>
+  
   •	Parâmetros: ID do pedido a ser obtido
+  
 Produtos:
   •	Adicionar Produto: POST /api/produtos/add
   •	Payload JSON: 
