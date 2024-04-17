@@ -83,17 +83,18 @@ code:
 
 
 ------------------------------------------------------------------
-DOCUMENTAÇÃO DA API
+# DOCUMENTAÇÃO DA API
 
 Esta API foi desenvolvida para lidar com o registro e busca de usuários, assim como para gerenciar pedidos e produtos. Ela utiliza um banco de dados PostgreSQL para armazenamento de dados e oferece diversos endpoints para operações de CRUD e recuperação de dados.
 
 ------------------------------------------------------------------
-Tecnologias Utilizadas
+# Tecnologias Utilizadas
 •	Python
 •	Flask
 •	PostgreSQL
+------------------------------------------------------------------
 
-Instruções de Configuração
+# Instruções de Configuração
 1.	Clone o repositório do GitHub: [(https://github.com/FabioMAmaral/cp2.git)]
 2.	Instale o Python (caso ainda não esteja instalado)
 3.	Instale os pacotes Python necessários:
@@ -105,8 +106,9 @@ pip install flask psycopg2 flasgger
    
 python app.py 
 7.	Acesse os endpoints da API utilizando ferramentas como Postman, cURL ou scripts.
-   
-ENDPOINTS
+   ------------------------------------------------------------------
+
+# ENDPOINTS
 Usuários:
   •	Adicionar Usuário: POST /api/users/add
   •	Payload JSON: { "nome": "Nome do Usuário", "email": "email@example.com", "idade": 30 }
@@ -124,6 +126,7 @@ Produtos:
   •	Parâmetros: ID do produto a ser obtido
   
 Para mais detalhes sobre cada endpoint, incluindo os dados necessários nos payloads das requisições e o formato das respostas, consulte a documentação do Swagger fornecida no código da API.
+------------------------------------------------------------------
 
-TESTES
+# TESTES
 Você pode testar a API utilizando ferramentas como Postman, cURL ou escrevendo scripts para interagir com os endpoints. Certifique-se de fornecer dados válidos nos payloads das requisições para operações bem-sucedidas.
