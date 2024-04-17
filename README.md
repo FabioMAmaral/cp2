@@ -87,11 +87,14 @@ code:
 
 Esta API foi desenvolvida para lidar com o registro e busca de usuários, assim como para gerenciar pedidos e produtos. Ela utiliza um banco de dados PostgreSQL para armazenamento de dados e oferece diversos endpoints para operações de CRUD e recuperação de dados.
 
+
 ------------------------------------------------------------------
 # Tecnologias Utilizadas
 •	Python
 •	Flask
 •	PostgreSQL
+
+
 ------------------------------------------------------------------
 
 # Instruções de Configuração
@@ -106,6 +109,8 @@ pip install flask psycopg2 flasgger
    
 python app.py 
 7.	Acesse os endpoints da API utilizando ferramentas como Postman, cURL ou scripts.
+
+
    ------------------------------------------------------------------
 
 # ENDPOINTS
@@ -126,6 +131,8 @@ Produtos:
   •	Parâmetros: ID do produto a ser obtido
   
 Para mais detalhes sobre cada endpoint, incluindo os dados necessários nos payloads das requisições e o formato das respostas, consulte a documentação do Swagger fornecida no código da API.
+
+
 ------------------------------------------------------------------
 
 # TESTES
