@@ -3,26 +3,64 @@
 
 Esta API foi desenvolvida para lidar com o registro e busca de usuários, assim como para gerenciar pedidos e produtos. Ela utiliza um banco de dados PostgreSQL para armazenamento de dados e oferece diversos endpoints para operações de CRUD e recuperação de dados.
 
-
 ## Tecnologias Utilizadas
 •	Python
 •	Flask
 •	PostgreSQL
 
-
 ## Instruções de Configuração
-1.	Clone o repositório do GitHub: [(https://github.com/FabioMAmaral/cp2.git)]
+## Configuração e Execução
+1. Clone o repositório para sua máquina local:
+
+```bash
+git clone https://github.com/FabioMAmaral/cp2.git
+```
 2.	Instale o Python (caso ainda não esteja instalado)
 3.	Instale os pacotes Python necessários:
 
 pip install flask psycopg2 flasgger 
 
-4.	Configure o seu banco de dados PostgreSQL e atualize as credenciais do banco de dados no código (db_host, db_name, db_user, db_password).
-5.	Execute a aplicação Flask:
-   
-python app.py 
-7.	Acesse os endpoints da API utilizando ferramentas como Postman, cURL ou scripts.
+4.Configure o banco de dados PostgreSQL:
+- Crie um banco de dados com o nome postgres
+- Edite as variáveis de ambiente no arquivo .env com as informações do banco de dados:
 
+DB_HOST=localhost
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=12345
+
+Para a criação das tabelas é necessario o seguinte no script:
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    idade INT
+);
+
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    preco NUMERIC(10, 2) NOT NULL
+);
+
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES users(id),
+    descricao TEXT,
+    status VARCHAR(50)
+);
+
+CREATE TABLE pedidos_produtos (
+    pedido_id INT REFERENCES pedidos(id),
+    produto_id INT REFERENCES produtos(id),
+    PRIMARY KEY (pedido_id, produto_id)
+);
+
+5.	Execute a aplicação Flask:
+
+python app.py
+
+6.	Acesse os endpoints da API utilizando ferramentas como Postman, cURL ou scripts.
 
 ------------------------------------------------------------------
 
@@ -74,9 +112,33 @@ Produtos:
   •	Consultar Produto: GET /api/produtos/<produto_id>
   •	Parâmetros: ID do produto a ser obtido
   
-Para mais detalhes sobre cada endpoint, incluindo os dados necessários nos payloads das requisições e o formato das respostas, consulte a documentação do Swagger fornecida no código da API.
+------------------------------------------------------------------
 
+#Scripts de Ingestão de Dados
 
+Para popular as tabelas da API, siga os passos abaixo:
+Na ordem para executar os scripts dessa ordem -> clientes_script.py -> produtos_script.py -> pedidos_script.py
+(Pois nessa ordem ao finalizar a tabela pedidos_produtos vai fazer a alto incrementação dos ids dos pedidos e os ids dos produtos)
+
+##Adicionar Produtos
+1. Coloque o arquivo de produtos no formato TXT, CSV, XLSX ou JSON dentro do diretório ingestao-de-dados.
+2. Execute o script produtos_script.py para adicionar os produtos à API:
+
+python ingestao-de-dados/produtos_script.py
+
+#Adicionar Clientes
+1. Coloque o arquivo de clientes no formato TXT, CSV, XLSX ou JSON dentro do diretório ingestao-de-dados.
+2. Execute o script clientes_script.py para adicionar os clientes à API:
+
+python ingestao-de-dados/clientes_script.py
+
+#Criar Pedidos
+
+1. Execute o script pedidos_script.py para criar pedidos usando os IDs de clientes e produtos já cadastrados:
+   
+python ingestao-de-dados/pedidos_script.py
+
+Certifique-se de que os arquivos de dados estejam formatados corretamente e sigam as regras estabelecidas na API.
 ------------------------------------------------------------------
 
 # TESTES
