@@ -83,18 +83,18 @@ code:
 
 
 ------------------------------------------------------------------
-## DOCUMENTAÇÃO DA API
+# DOCUMENTAÇÃO DA API
 
 Esta API foi desenvolvida para lidar com o registro e busca de usuários, assim como para gerenciar pedidos e produtos. Ela utiliza um banco de dados PostgreSQL para armazenamento de dados e oferece diversos endpoints para operações de CRUD e recuperação de dados.
 
 
-# Tecnologias Utilizadas
+## Tecnologias Utilizadas
 •	Python
 •	Flask
 •	PostgreSQL
 
 
-# Instruções de Configuração
+## Instruções de Configuração
 1.	Clone o repositório do GitHub: [(https://github.com/FabioMAmaral/cp2.git)]
 2.	Instale o Python (caso ainda não esteja instalado)
 3.	Instale os pacotes Python necessários:
@@ -110,7 +110,7 @@ python app.py
 
 ------------------------------------------------------------------
 
-# ENDPOINTS
+## ENDPOINTS
 Usuários:
   •	Adicionar Usuário: POST /api/users/add
   •	Payload JSON: { "nome": "Nome do Usuário", "email": "email@example.com", "idade": 30 }
