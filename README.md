@@ -140,12 +140,12 @@ python app.py
 Produtos:
   •	Adicionar Produto: POST /api/produtos/add
   •	Payload JSON: 
-    ``` bash
+   ``` bash
    { 
    "nome": "Nome do Produto"
    "preco": 50.00 
    }
-```
+  ```
   •	Consultar Produto: GET /api/produtos/<produto_id>
   •	Parâmetros: ID do produto a ser obtido
   
