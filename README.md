@@ -112,7 +112,7 @@ python app.py
 
 # ENDPOINTS
   
-Usuários:
+### Usuários:
   •	Adicionar Usuário: POST /api/users/add
   •	Payload JSON:
   ```bash
@@ -121,18 +121,31 @@ Usuários:
       "email": "usuario@example.com",
       "idade": 30
     } 
-    ```
+  ```
 
   •	Buscar Usuário: GET /api/users/<user_id>
   •	Parâmetros: ID do usuário a ser obtido
-Pedidos:
+### Pedidos:
   •	Adicionar Pedido: POST /api/pedidos/add
-  •	Payload JSON: { "usuario_id": 1, "descricao": "Descrição do Pedido", "produtos": [1, 2, 3] }
+  •	Payload JSON:
+  ``` bash
+   { 
+   "usuario_id": 1 
+   "descricao": "Descrição do Pedido" 
+   "produtos": [1, 2, 3] 
+   }
+```
   •	Consultar Pedido: GET /api/pedidos/<pedido_id>
   •	Parâmetros: ID do pedido a ser obtido
 Produtos:
   •	Adicionar Produto: POST /api/produtos/add
-  •	Payload JSON: { "nome": "Nome do Produto", "preco": 50.00 }
+  •	Payload JSON: 
+    ``` bash
+   { 
+   "nome": "Nome do Produto"
+   "preco": 50.00 
+   }
+```
   •	Consultar Produto: GET /api/produtos/<produto_id>
   •	Parâmetros: ID do produto a ser obtido
   
