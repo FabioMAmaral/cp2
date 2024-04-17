@@ -116,6 +116,7 @@ python app.py
   •	Adicionar Usuário: POST /api/users/add
   
   •	Payload JSON:
+  
   ```bash
     {
       "nome": "Nome do Usuário",
@@ -131,6 +132,7 @@ python app.py
   •	Adicionar Pedido: POST /api/pedidos/add
   
   •	Payload JSON:
+  
   ``` bash
    { 
    "usuario_id": 1 
@@ -144,7 +146,9 @@ python app.py
   
 Produtos:
   •	Adicionar Produto: POST /api/produtos/add
+  
   •	Payload JSON: 
+  
    ``` bash
    { 
    "nome": "Nome do Produto"
