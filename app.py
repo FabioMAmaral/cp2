@@ -12,6 +12,7 @@ conn = psycopg2.connect(host=db_host, database=db_name, user=db_user, password=d
 app = Flask(__name__)
 swagger = Swagger(app)
 
+# Endpoint para listar todos os usuários
 @app.route('/api/users', methods=['GET'])
 def get_users():
     """
@@ -27,6 +28,7 @@ def get_users():
     cursor.close()
     return jsonify(users)
 
+# Endpoint para buscar um usuário por ID
 @app.route('/api/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     """
@@ -48,6 +50,7 @@ def get_user(user_id):
     cursor.close()
     return jsonify(user)
 
+# Rota para adicionar um novo usuário
 @app.route('/api/users/add', methods=['POST'])
 def add_user():
     """
@@ -77,17 +80,19 @@ def add_user():
       201:
         description: User added successfully
     """
-    data = request.get_json()
+    data = request.get_json()  # Obtém os dados enviados pelo cliente em formato JSON
     nome = data.get('nome')
     email = data.get('email')
     idade = data.get('idade')
 
+    # Validar os dados recebidos
     if nome is None or email is None or idade is None:
         return jsonify({'message': 'Erro: Todos os campos (nome, email, idade) são obrigatórios.'}), 400
 
     if not isinstance(idade, int) or idade <= 0:
         return jsonify({'message': 'Erro: Idade deve ser um número inteiro positivo.'}), 400
     
+    # Adicionar o usuário ao banco de dados
     cursor = conn.cursor()
     cursor.execute('INSERT INTO users (nome, email, idade) VALUES (%s, %s, %s)', (nome, email, idade))
     conn.commit()
@@ -95,6 +100,7 @@ def add_user():
 
     return jsonify({'message': 'Usuário adicionado com sucesso.'}), 201
 
+# Endpoint para atualizar um usuário por ID
 @app.route('/api/users/update/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     """
@@ -130,12 +136,14 @@ def update_user(user_id):
     email = data.get('email')
     idade = data.get('idade')
 
+    # Validar os dados recebidos
     if nome is None or email is None or idade is None:
         return jsonify({'message': 'Erro: Todos os campos (nome, email, idade) são obrigatórios.'}), 400
 
     if not isinstance(idade, int) or idade <= 0:
         return jsonify({'message': 'Erro: Idade deve ser um número inteiro positivo.'}), 400
 
+    # Atualizar o usuário no banco de dados
     cursor = conn.cursor()
     cursor.execute('UPDATE users SET nome = %s, email = %s, idade = %s WHERE id = %s', (nome, email, idade, user_id))
     conn.commit()
@@ -143,6 +151,7 @@ def update_user(user_id):
 
     return jsonify({'message': 'Usuário atualizado com sucesso.'}), 200
 
+# Endpoint para excluir um usuário por ID
 @app.route('/api/users/delete/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     """
@@ -165,6 +174,7 @@ def delete_user(user_id):
 
     return jsonify({'message': 'Usuário excluído com sucesso.'}), 200
 
+# Endpoint para listar todos os pedidos
 @app.route('/api/pedidos', methods=['GET'])
 def get_pedidos():
     """
@@ -180,6 +190,7 @@ def get_pedidos():
     cursor.close()
     return jsonify(pedidos)
 
+# Endpoint para buscar um pedido por ID
 @app.route('/api/pedidos/<int:pedido_id>', methods=['GET'])
 def get_pedido(pedido_id):
     """
@@ -236,18 +247,30 @@ def add_pedido():
         description: Order added successfully
     """
     data = request.get_json()
+    if data is None:
+        return jsonify({'message': 'Erro: Nenhum dado JSON recebido.'}), 400
     usuario_id = data.get('usuario_id')
     descricao = data.get('descricao')
     produtos = data.get('produtos')
+    if not isinstance(produtos, list):
+        produtos = [produtos]
+    produtos = data.get('produtos')
     status = data.get('status')
 
+    # Certifica-se de que produtos seja uma lista
+    if not isinstance(produtos, list):
+        produtos = [produtos]  # Transforma em lista se não for
+
+    # Validar os dados recebidos
     if usuario_id is None or descricao is None or produtos is None:
         return jsonify({'message': 'Erro: Todos os campos (usuario_id, descricao, produtos) são obrigatórios.'}), 400
     
+    # Adicionar o pedido ao banco de dados
     cursor = conn.cursor()
     cursor.execute('INSERT INTO pedidos (usuario_id, descricao, status) VALUES (%s, %s, %s) RETURNING id', (usuario_id, descricao, status))
     pedido_id = cursor.fetchone()[0]
 
+    # Associar os produtos ao pedido
     for produto_id in produtos:
         cursor.execute('INSERT INTO pedidos_produtos (pedido_id, produto_id) VALUES (%s, %s)', (pedido_id, produto_id))
     conn.commit()
@@ -255,6 +278,7 @@ def add_pedido():
 
     return jsonify({'message': 'Pedido adicionado com sucesso.'}), 201
 
+# Endpoint para atualizar um pedido por ID
 @app.route('/api/pedidos/update/<int:pedido_id>', methods=['PUT'])
 def update_pedido(pedido_id):
     """
@@ -296,12 +320,15 @@ def update_pedido(pedido_id):
     produtos = data.get('produtos')
     status = data.get('status')
 
+    # Validar os dados recebidos
     if usuario_id is None or descricao is None or produtos is None:
         return jsonify({'message': 'Erro: Todos os campos (usuario_id, descricao, produtos) são obrigatórios.'}), 400
 
+    # Atualizar o pedido no banco de dados
     cursor = conn.cursor()
     cursor.execute('UPDATE pedidos SET usuario_id = %s, descricao = %s, status = %s WHERE id = %s', (usuario_id, descricao, status, pedido_id))
-    
+
+    # Atualizar a associação dos produtos com o pedido (excluir e recriar)
     cursor.execute('DELETE FROM pedidos_produtos WHERE pedido_id = %s', (pedido_id,))
     for produto_id in produtos:
         cursor.execute('INSERT INTO pedidos_produtos (pedido_id, produto_id) VALUES (%s, %s)', (pedido_id, produto_id))
@@ -311,6 +338,7 @@ def update_pedido(pedido_id):
 
     return jsonify({'message': 'Pedido atualizado com sucesso.'}), 200
 
+# Endpoint para excluir um pedido por ID
 @app.route('/api/pedidos/delete/<int:pedido_id>', methods=['DELETE'])
 def delete_pedido(pedido_id):
     """
@@ -334,6 +362,7 @@ def delete_pedido(pedido_id):
 
     return jsonify({'message': 'Pedido excluído com sucesso.'}), 200
 
+# Endpoint para listar todos os pedidos associados a produtos
 @app.route('/api/pedidos_produtos', methods=['GET'])
 def get_pedidos_produtos():
     """
@@ -347,6 +376,8 @@ def get_pedidos_produtos():
     cursor.execute('SELECT * FROM pedidos_produtos')
     pedidos_produtos = cursor.fetchall()
     cursor.close()
+
+    # Montar a resposta em formato JSON
     response = []
     for pedido_produto in pedidos_produtos:
         pedido_id, produto_id = pedido_produto
@@ -354,45 +385,7 @@ def get_pedidos_produtos():
 
     return jsonify(response)
 
-@app.route('/api/pedidos_produtos/add', methods=['POST'])
-def add_pedido_produto():
-    """
-    Add a product to an order
-    ---
-    parameters:
-      - name: body
-        in: body
-        required: true
-        schema:
-          id: PedidoProduto
-          required:
-            - pedido_id
-            - produto_id
-          properties:
-            pedido_id:
-              type: integer
-              description: ID of the order to associate the product with
-            produto_id:
-              type: integer
-              description: ID of the product to be associated with the order
-    responses:
-      201:
-        description: Product added to order successfully
-    """
-    data = request.get_json()
-    pedido_id = data.get('pedido_id')
-    produto_id = data.get('produto_id')
-
-    if pedido_id is None or produto_id is None:
-        return jsonify({'message': 'Erro: Os campos pedido_id e produto_id são obrigatórios.'}), 400
-
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO pedidos_produtos (pedido_id, produto_id) VALUES (%s, %s)', (pedido_id, produto_id))
-    conn.commit()
-    cursor.close()
-
-    return jsonify({'message': 'Produto associado ao pedido com sucesso.'}), 201
-
+# Endpoint para listar todos os produtos
 @app.route('/api/produtos', methods=['GET'])
 def get_produtos():
     """
@@ -409,6 +402,7 @@ def get_produtos():
     produtos = [{'id': p[0], 'nome': p[1], 'preco': float(p[2])} for p in produtos]
     return jsonify(produtos)
 
+# Endpoint para buscar um produto por ID
 @app.route('/api/produtos/<int:produto_id>', methods=['GET'])
 def get_produto(produto_id):
     """
@@ -433,6 +427,7 @@ def get_produto(produto_id):
     else:
         return jsonify({'message': 'Produto não encontrado.'}), 404
 
+# Rota para adicionar um novo produto
 @app.route('/api/produtos/add', methods=['POST'])
 def add_produto():
     """
@@ -458,7 +453,7 @@ def add_produto():
       201:
         description: Product added successfully
     """
-    data = request.get_json()
+    data = request.get_json()  # Obtém os dados enviados pelo cliente em formato JSON
     nome = data.get('nome')
     preco = data.get('preco')
 
@@ -469,6 +464,7 @@ def add_produto():
     if not isinstance(preco, (int, float)) or preco <= 0:
         return jsonify({'message': 'Erro: Preço deve ser um número positivo.'}), 400
     
+    # Adicionar o produto ao banco de dados
     cursor = conn.cursor()
     cursor.execute('INSERT INTO produtos (nome, preco) VALUES (%s, %s)', (nome, preco))
     conn.commit()
@@ -476,6 +472,7 @@ def add_produto():
 
     return jsonify({'message': 'Produto adicionado com sucesso.'}), 201
 
+# Endpoint para atualizar um produto por ID
 @app.route('/api/produtos/update/<int:produto_id>', methods=['PUT'])
 def update_produto(produto_id):
     """
@@ -507,9 +504,11 @@ def update_produto(produto_id):
     nome = data.get('nome')
     preco = data.get('preco')
 
+    # Validar os dados recebidos
     if nome is None or preco is None:
         return jsonify({'message': 'Erro: Todos os campos (nome, preco) são obrigatórios.'}), 400
 
+    # Atualizar o produto no banco de dados
     cursor = conn.cursor()
     cursor.execute('UPDATE produtos SET nome = %s, preco = %s WHERE id = %s', (nome, preco, produto_id))
     conn.commit()
@@ -517,6 +516,7 @@ def update_produto(produto_id):
 
     return jsonify({'message': 'Produto atualizado com sucesso.'}), 200
 
+# Endpoint para excluir um produto por ID
 @app.route('/api/produtos/delete/<int:produto_id>', methods=['DELETE'])
 def delete_produto(produto_id):
     """
