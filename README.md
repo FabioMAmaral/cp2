@@ -111,9 +111,18 @@ python app.py
 ------------------------------------------------------------------
 
 # ENDPOINTS
+  
 Usuários:
   •	Adicionar Usuário: POST /api/users/add
-  •	Payload JSON: { "nome": "Nome do Usuário", "email": "email@example.com", "idade": 30 }
+  •	Payload JSON:
+  ```bash
+    {
+      "nome": "Nome do Usuário",
+      "email": "usuario@example.com",
+      "idade": 30
+    } 
+    ```
+
   •	Buscar Usuário: GET /api/users/<user_id>
   •	Parâmetros: ID do usuário a ser obtido
 Pedidos:
