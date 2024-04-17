@@ -108,6 +108,7 @@ python app.py
 7.	Acesse os endpoints da API utilizando ferramentas como Postman, cURL ou scripts.
 
 
+------------------------------------------------------------------
 
 # ENDPOINTS
 Usuários:
