@@ -80,24 +80,18 @@ def add_user():
       201:
         description: User added successfully
     """
-    data = request.get_json()  # Obtém os dados enviados pelo cliente em formato JSON
+    data = request.get_json()
     nome = data.get('nome')
     email = data.get('email')
     idade = data.get('idade')
-
-    # Validar os dados recebidos
     if nome is None or email is None or idade is None:
         return jsonify({'message': 'Erro: Todos os campos (nome, email, idade) são obrigatórios.'}), 400
-
     if not isinstance(idade, int) or idade <= 0:
         return jsonify({'message': 'Erro: Idade deve ser um número inteiro positivo.'}), 400
-    
-    # Adicionar o usuário ao banco de dados
     cursor = conn.cursor()
     cursor.execute('INSERT INTO users (nome, email, idade) VALUES (%s, %s, %s)', (nome, email, idade))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Usuário adicionado com sucesso.'}), 201
 
 # Endpoint para atualizar um usuário por ID
@@ -135,20 +129,14 @@ def update_user(user_id):
     nome = data.get('nome')
     email = data.get('email')
     idade = data.get('idade')
-
-    # Validar os dados recebidos
     if nome is None or email is None or idade is None:
         return jsonify({'message': 'Erro: Todos os campos (nome, email, idade) são obrigatórios.'}), 400
-
     if not isinstance(idade, int) or idade <= 0:
         return jsonify({'message': 'Erro: Idade deve ser um número inteiro positivo.'}), 400
-
-    # Atualizar o usuário no banco de dados
     cursor = conn.cursor()
     cursor.execute('UPDATE users SET nome = %s, email = %s, idade = %s WHERE id = %s', (nome, email, idade, user_id))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Usuário atualizado com sucesso.'}), 200
 
 # Endpoint para excluir um usuário por ID
@@ -171,7 +159,6 @@ def delete_user(user_id):
     cursor.execute('DELETE FROM users WHERE id = %s', (user_id,))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Usuário excluído com sucesso.'}), 200
 
 # Endpoint para listar todos os pedidos
@@ -256,26 +243,17 @@ def add_pedido():
         produtos = [produtos]
     produtos = data.get('produtos')
     status = data.get('status')
-
-    # Certifica-se de que produtos seja uma lista
     if not isinstance(produtos, list):
-        produtos = [produtos]  # Transforma em lista se não for
-
-    # Validar os dados recebidos
+        produtos = [produtos]
     if usuario_id is None or descricao is None or produtos is None:
         return jsonify({'message': 'Erro: Todos os campos (usuario_id, descricao, produtos) são obrigatórios.'}), 400
-    
-    # Adicionar o pedido ao banco de dados
     cursor = conn.cursor()
     cursor.execute('INSERT INTO pedidos (usuario_id, descricao, status) VALUES (%s, %s, %s) RETURNING id', (usuario_id, descricao, status))
     pedido_id = cursor.fetchone()[0]
-
-    # Associar os produtos ao pedido
     for produto_id in produtos:
         cursor.execute('INSERT INTO pedidos_produtos (pedido_id, produto_id) VALUES (%s, %s)', (pedido_id, produto_id))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Pedido adicionado com sucesso.'}), 201
 
 # Endpoint para atualizar um pedido por ID
@@ -319,23 +297,15 @@ def update_pedido(pedido_id):
     descricao = data.get('descricao')
     produtos = data.get('produtos')
     status = data.get('status')
-
-    # Validar os dados recebidos
     if usuario_id is None or descricao is None or produtos is None:
         return jsonify({'message': 'Erro: Todos os campos (usuario_id, descricao, produtos) são obrigatórios.'}), 400
-
-    # Atualizar o pedido no banco de dados
     cursor = conn.cursor()
     cursor.execute('UPDATE pedidos SET usuario_id = %s, descricao = %s, status = %s WHERE id = %s', (usuario_id, descricao, status, pedido_id))
-
-    # Atualizar a associação dos produtos com o pedido (excluir e recriar)
     cursor.execute('DELETE FROM pedidos_produtos WHERE pedido_id = %s', (pedido_id,))
     for produto_id in produtos:
         cursor.execute('INSERT INTO pedidos_produtos (pedido_id, produto_id) VALUES (%s, %s)', (pedido_id, produto_id))
-
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Pedido atualizado com sucesso.'}), 200
 
 # Endpoint para excluir um pedido por ID
@@ -359,7 +329,6 @@ def delete_pedido(pedido_id):
     cursor.execute('DELETE FROM pedidos WHERE id = %s', (pedido_id,))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Pedido excluído com sucesso.'}), 200
 
 # Endpoint para listar todos os pedidos associados a produtos
@@ -376,13 +345,10 @@ def get_pedidos_produtos():
     cursor.execute('SELECT * FROM pedidos_produtos')
     pedidos_produtos = cursor.fetchall()
     cursor.close()
-
-    # Montar a resposta em formato JSON
     response = []
     for pedido_produto in pedidos_produtos:
         pedido_id, produto_id = pedido_produto
         response.append({'pedido_id': pedido_id, 'produto_id': produto_id})
-
     return jsonify(response)
 
 # Endpoint para listar todos os produtos
@@ -453,23 +419,17 @@ def add_produto():
       201:
         description: Product added successfully
     """
-    data = request.get_json()  # Obtém os dados enviados pelo cliente em formato JSON
+    data = request.get_json()
     nome = data.get('nome')
     preco = data.get('preco')
-
-    # Validar os dados recebidos
     if nome is None or preco is None:
         return jsonify({'message': 'Erro: Todos os campos (nome, preco) são obrigatórios.'}), 400
-
     if not isinstance(preco, (int, float)) or preco <= 0:
         return jsonify({'message': 'Erro: Preço deve ser um número positivo.'}), 400
-    
-    # Adicionar o produto ao banco de dados
     cursor = conn.cursor()
     cursor.execute('INSERT INTO produtos (nome, preco) VALUES (%s, %s)', (nome, preco))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Produto adicionado com sucesso.'}), 201
 
 # Endpoint para atualizar um produto por ID
@@ -503,17 +463,12 @@ def update_produto(produto_id):
     data = request.get_json()
     nome = data.get('nome')
     preco = data.get('preco')
-
-    # Validar os dados recebidos
     if nome is None or preco is None:
         return jsonify({'message': 'Erro: Todos os campos (nome, preco) são obrigatórios.'}), 400
-
-    # Atualizar o produto no banco de dados
     cursor = conn.cursor()
     cursor.execute('UPDATE produtos SET nome = %s, preco = %s WHERE id = %s', (nome, preco, produto_id))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Produto atualizado com sucesso.'}), 200
 
 # Endpoint para excluir um produto por ID
@@ -536,7 +491,6 @@ def delete_produto(produto_id):
     cursor.execute('DELETE FROM produtos WHERE id = %s', (produto_id,))
     conn.commit()
     cursor.close()
-
     return jsonify({'message': 'Produto excluído com sucesso.'}), 200
 
 if __name__ == '__main__':
