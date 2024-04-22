@@ -493,5 +493,9 @@ def delete_produto(produto_id):
     cursor.close()
     return jsonify({'message': 'Produto excluído com sucesso.'}), 200
 
+@app.route('/')
+def index():
+    return 'Black Lotus'
+    
 if __name__ == '__main__':
     app.run(debug=True)
